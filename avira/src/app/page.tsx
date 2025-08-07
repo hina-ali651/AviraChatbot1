@@ -140,7 +140,8 @@ export default function Home() {
     try {
       // Send full chat history to backend for context
       const chatHistory = chats.find(chat => chat.id === chatId)?.messages || [];
-      const res = await fetch("http://127.0.0.1:8000/message", {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8000";
+      const res = await fetch(`${backendUrl}/message`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

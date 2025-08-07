@@ -63,17 +63,17 @@ class MessageResponse(BaseModel):
 @app.post("/message", response_model=MessageResponse)
 async def process_message(request: MessageRequest):
     try:
-        # Combine content and history for context
         user_input = request.content
-        history = request.history if hasattr(request, 'history') else []
-        # Format history for the agent (as a string)
-        history_text = "\n".join([
+        history = request.history or []
+
+        history_text = "\n".join(
             f"{msg['sender']}: {msg['text']}" for msg in history
-        ]) if history else ""
-        if history_text:
-            prompt = f"Previous conversation:\n{history_text}\nUser: {user_input}"
-        else:
-            prompt = user_input
+        ) if history else ""
+
+        prompt = (
+            f"Previous conversation:\n{history_text}\nUser: {user_input}"
+            if history_text else user_input
+        )
 
         result = Runner.run_streamed(agent, prompt, run_config=config)
 
@@ -81,11 +81,16 @@ async def process_message(request: MessageRequest):
 
         async for event in result.stream_events():
             if event.type == "raw_response_event" and isinstance(event.data, ResponseTextDeltaEvent):
-                final_output += event.data.delta  # collect deltas
+                final_output += event.data.delta
+
+        # ✅ Fix: Ensure at least something is returned
+        if not final_output.strip():
+            final_output = "Sorry, I couldn't generate a response."
 
         return MessageResponse(output=final_output)
 
     except Exception as e:
+        print(f"Error in /message endpoint: {e}")
         raise HTTPException(status_code=500, detail=f"Error processing message: {str(e)}")
 
 # Health check
