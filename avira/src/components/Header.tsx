@@ -1,5 +1,6 @@
 import { Sparkles, UserCircle, Menu } from "lucide-react";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 interface HeaderProps {
   onMenuClick?: () => void;
@@ -40,10 +41,12 @@ export function Header({ onMenuClick }: HeaderProps) {
         ) : (
           <div className="flex items-center gap-3">
             {session.user?.image ? (
-              <img
+              <Image
                 src={session.user.image}
                 alt={session.user.name || "User"}
-                className="w-8 h-8 rounded-full border-2 border-pink-500 shadow"
+                width={32}
+                height={32}
+                className="w-8 h-8 rounded-full border-2 border-pink-500 shadow object-cover"
               />
             ) : (
               <UserCircle className="w-8 h-8 text-pink-500" />

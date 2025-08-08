@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { Bot } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -32,7 +32,7 @@ export default function Home() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const currentChat = chats.find(chat => chat.id === currentChatId);
-  const messages = currentChat?.messages || [];
+  const messages = useMemo(() => currentChat?.messages || [], [currentChat]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -47,9 +47,9 @@ export default function Home() {
     if (status === "authenticated") {
       fetch("/api/chats")
         .then(res => res.json())
-        .then(data => {
+        .then((data: Array<{ _id?: string; id?: string; subject: string; messages: Message[] }>) => {
           // Normalize MongoDB _id to id (always string)
-          const normalized = data.map((chat: any) => ({
+          const normalized = data.map((chat) => ({
             id: chat._id ? String(chat._id) : String(chat.id || ""),
             subject: chat.subject,
             messages: chat.messages,
@@ -63,10 +63,10 @@ export default function Home() {
   // When a chat is selected, fetch its latest messages from DB
   useEffect(() => {
     if (!currentChatId) return;
-    fetch(`/api/chats`) // This will fetch all chats, could be optimized
+    fetch(`/api/chats`)
       .then(res => res.json())
-      .then(data => {
-        const chat = data.find((c: any) => (c._id ? String(c._id) : String(c.id || "")) === currentChatId);
+      .then((data: Array<{ _id?: string; id?: string; subject: string; messages: Message[] }>) => {
+        const chat = data.find((c) => (c._id ? String(c._id) : String(c.id || "")) === currentChatId);
         if (chat) {
           setChats(prev => prev.map(c => c.id === currentChatId ? {
             id: chat._id ? String(chat._id) : String(chat.id || ""),
@@ -81,7 +81,6 @@ export default function Home() {
     if (!input.trim()) return;
 
     let chatId = currentChatId;
-    let isNewChat = false;
     // If no chat is selected, create a new chat and set it as current
     if (!chatId) {
       const newChat = {
@@ -105,7 +104,6 @@ export default function Home() {
         }
       ]);
       setCurrentChatId(chatId);
-      isNewChat = true;
     }
 
     const userMessage: Message = {
@@ -204,10 +202,10 @@ export default function Home() {
           body: JSON.stringify({ chatId, message: { sender: "assistant", text: finalAssistantText } }),
         });
       }
-    } catch (err: any) {
+    } catch (err) {
       const errorMessage: Message = {
         sender: "error",
-        text: err.message || "Failed to contact server",
+        text: err instanceof Error ? err.message : "Failed to contact server",
       };
       setChats(prevChats =>
         prevChats.map(chat =>

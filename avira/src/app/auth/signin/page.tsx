@@ -1,9 +1,14 @@
 "use client";
 import { getProviders, signIn } from "next-auth/react";
+import type { ClientSafeProvider } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export default function SignInPage() {
-  const [providers, setProviders] = useState<any>({});
+  // Typed provider state to match getProviders return type
+  const [
+    providers,
+    setProviders,
+  ] = useState<Record<string, ClientSafeProvider> | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -12,7 +17,7 @@ export default function SignInPage() {
     getProviders().then(setProviders);
   }, []);
 
-  const handleCredentialsSignIn = async (e: React.FormEvent) => {
+  const handleCredentialsSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     const res = await signIn("credentials", {
@@ -61,8 +66,9 @@ export default function SignInPage() {
             </div>
           )}
           {providers &&
-            Object.values(providers).map((provider: any) =>
-              provider.id === "credentials" ? (
+            Object.values(providers).map((provider) => {
+              const typedProvider = provider as ClientSafeProvider;
+              return typedProvider.id === "credentials" ? (
                 <form
                   key="credentials"
                   className="flex flex-col gap-3"
@@ -95,8 +101,8 @@ export default function SignInPage() {
                 </form>
               ) : (
                 <button
-                  key={provider.name}
-                  onClick={() => signIn(provider.id, { callbackUrl: "/" })}
+                  key={typedProvider.name as string}
+                  onClick={() => signIn(typedProvider.id as string, { callbackUrl: "/" })}
                   className="w-full flex items-center justify-center gap-2 bg-white text-blue-700 font-bold py-2 rounded-xl shadow-lg hover:bg-blue-50 transition border border-blue-200"
                 >
                   <svg
@@ -129,10 +135,10 @@ export default function SignInPage() {
                       </clipPath>
                     </defs>
                   </svg>
-                  Sign in with {provider.name}
+                  Sign in with {typedProvider.name as string}
                 </button>
-              )
-            )}
+              );
+            })}
         </div>
       </div>
       <div className="mt-8 text-gray-400 text-xs text-center opacity-80">

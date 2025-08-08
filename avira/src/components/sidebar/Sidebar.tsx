@@ -1,10 +1,15 @@
 import { Search, Plus, MessageSquare } from "lucide-react";
 import { motion } from "framer-motion";
 
+type Message = {
+  sender: string;
+  text: string;
+};
+
 type Chat = {
   id: string;
   subject: string;
-  messages: any[];
+  messages: Message[];
 };
 
 interface SidebarProps {

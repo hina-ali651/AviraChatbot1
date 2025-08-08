@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
 
 declare global {
-  // eslint-disable-next-line no-var
   var _mongoose: Promise<typeof mongoose> | undefined;
-  var _mongoClientPromise: Promise<any> | undefined;
+  var _mongoClientPromise: Promise<unknown> | undefined;
 }
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/avira";

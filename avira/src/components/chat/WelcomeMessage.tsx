@@ -1,4 +1,4 @@
-import { Bot, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { ChatInput } from "./ChatInput";
 import { motion } from "framer-motion";
 
@@ -57,7 +57,7 @@ export function WelcomeMessage({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.5 }}
           >
-            I'm Avira, your AI assistant. How can I help you today?
+            I&apos;m Avira, your AI assistant. How can I help you today?
           </motion.p>
         </motion.div>
       </div>

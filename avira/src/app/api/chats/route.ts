@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db";
 import { Chat } from "@/lib/chat.model";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
+// Import from shared module instead of the route file to avoid Next.js static export error
+import { authOptions } from "@/lib/authOptions";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   await db;
-  const session = await getServerSession({ req, ...authOptions });
+  const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
     return NextResponse.json([], { status: 200 });
   }
@@ -17,20 +18,22 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   await db;
-  const session = await getServerSession({ req, ...authOptions });
+  const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const userId = session.user.email;
   const { subject, messages } = await req.json();
-  if (!subject || !messages) return NextResponse.json({ error: "Missing data" }, { status: 400 });
+  if (!subject || !messages) {
+    return NextResponse.json({ error: "Missing data" }, { status: 400 });
+  }
   const chat = await Chat.create({ subject, messages, userId });
   return NextResponse.json(chat, { status: 201 });
 }
 
 export async function PUT(req: NextRequest) {
   await db;
-  const session = await getServerSession({ req, ...authOptions });
+  const session = await getServerSession(authOptions);
   if (!session || !session.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
