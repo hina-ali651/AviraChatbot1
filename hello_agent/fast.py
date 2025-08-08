@@ -15,7 +15,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "https://chatbot1-red-iota.vercel.app"
+        "https://avira-chatbot1-lrt9.vercel.app",
+
     ],
     allow_credentials=True,
     allow_methods=["*"],
