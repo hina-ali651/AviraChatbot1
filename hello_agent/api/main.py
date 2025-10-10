@@ -96,6 +96,7 @@ async def process_message(request: MessageRequest):
         print(f"Error in /message endpoint: {e}")
         raise HTTPException(status_code=500, detail=f"Error processing message: {str(e)}")
 
+handler = app   # <-- add this
 # Health check
 @app.get("/health")
 async def health_check():
