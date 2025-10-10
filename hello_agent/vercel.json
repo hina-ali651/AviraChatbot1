@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "UV_NO_COMPILE=1 pip install --prefer-binary -r requirements.txt",
+  "buildCommand": "pip install --upgrade pip setuptools wheel",
   "builds": [
     {
       "src": "./fast.py",
