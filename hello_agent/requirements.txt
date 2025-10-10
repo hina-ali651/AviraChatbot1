@@ -44,9 +44,7 @@ idna==3.10
     #   httpx
     #   requests
 jiter==0.8.0
-    # via
-    #   hello-agent (pyproject.toml)
-    #   openai
+    # via openai
 mcp==1.6.0
     # via openai-agents
 openai==1.73.0
