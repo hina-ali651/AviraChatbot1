@@ -1,3 +1,0 @@
-{
-  "buildCommand": "UV_NO_COMPILE=1 pip install --prefer-binary -r hello_agent/requirements.txt"
-}
