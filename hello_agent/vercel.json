@@ -1,16 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "pip install --upgrade pip setuptools wheel",
-  "builds": [
-    {
-      "src": "./fast.py",
-      "use": "@vercel/python"
+  "functions": {
+    "hello_agent/fast.py": {
+      "runtime": "python3.12"
     }
-  ],
+  },
   "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/fast.py"
-    }
+    { "src": "/(.*)", "dest": "hello_agent/fast.py" }
   ]
 }
