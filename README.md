@@ -1,32 +1,57 @@
-# 🤖 Avira – Simple AI Chatbot
+# 🤖 Avira – AI Conversational Chatbot
 
-**Avira** is a lightweight AI chatbot built to handle text-based user interactions in a smart and conversational way. It can be integrated into websites or applications to provide instant assistance or support.
+**Avira** is a full-stack AI chatbot with secure authentication, built using Next.js and powered by LLM APIs. Users can sign in and have intelligent, context-aware conversations in real time.
+
+🔗 **Live Demo:** [avira-chatbot1-lrt9.vercel.app](https://avira-chatbot1-lrt9.vercel.app)
+
+---
+
+## 🎥 Demo
+
+[![Watch Demo](https://img.youtube.com/vi/ta58T15jEdo/0.jpg)](https://youtu.be/ta58T15jEdo)
 
 ---
 
 ## 🧠 Features
 
-- ✨ Natural language conversation
-- ⚙️ Easy to integrate into any app
-- 📦 Powered by LLM (OpenAI Agent SDK / Gemini API compatible)
-- 💬 Text-only chatbot
-- 🔐 Clean and simple architecture for learning and extension
+- 💬 Real-time AI conversations powered by LLM
+- 🔐 Secure user authentication with NextAuth.js
+- 💾 Chat history stored in MongoDB
+- ⚡ Serverless architecture with Next.js API routes
+- 🌐 Deployed on Vercel
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** Next.js 
-- **Backend:** Node.js or Serverless API
-- **Auth :** NextAuth.js
-- **Database :** MongoDB
+| Layer    | Technology        |
+|----------|-------------------|
+| Frontend | Next.js, Tailwind |
+| Auth     | NextAuth.js       |
+| Database | MongoDB           |
+| AI       | OpenAI / Gemini   |
+| Deploy   | Vercel            |
 
 ---
 
 ## 🚀 Getting Started
 
 ```bash
-git clone https://github.com/your-username/avira.git
-cd avira
+git clone https://github.com/hina-ali651/AviraChatbot1.git
+cd AviraChatbot1
 npm install
+cp .env.example .env.local
 npm run dev
+```
+
+---
+
+## 📌 Environment Variables
+
+`.env.local` file banao aur yeh add karo:
+
+```env
+NEXTAUTH_SECRET=your_secret
+MONGODB_URI=your_mongodb_uri
+OPENAI_API_KEY=your_api_key
+```
