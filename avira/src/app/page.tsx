@@ -88,19 +88,43 @@ export default function Home() {
         messages: [],
       };
       // Save new chat to DB
-      const res = await fetch("/api/chats", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newChat }),
-      });
-      const savedChat = await res.json();
+      let savedChat: { _id?: string; id?: string; subject?: string; messages?: Message[]; error?: string };
+      try {
+        const res = await fetch("/api/chats", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...newChat }),
+        });
+        savedChat = await res.json();
+        if (!res.ok || !(savedChat._id || savedChat.id)) {
+          throw new Error(savedChat.error || "Failed to create chat");
+        }
+      } catch (err) {
+        // Show the failure inline instead of crashing on an error response
+        // shaped nothing like a chat (no _id/messages).
+        const tempId = `error-${Date.now()}`;
+        setChats(prev => [
+          ...prev,
+          {
+            id: tempId,
+            subject: newChat.subject,
+            messages: [{
+              sender: "error",
+              text: err instanceof Error ? err.message : "Failed to start chat",
+            }],
+          },
+        ]);
+        setCurrentChatId(tempId);
+        setInput("");
+        return;
+      }
       chatId = savedChat._id ? String(savedChat._id) : String(savedChat.id || "");
       setChats(prev => [
         ...prev,
         {
           id: chatId ?? "", // fallback to empty string if undefined/null
-          subject: savedChat.subject,
-          messages: savedChat.messages,
+          subject: savedChat.subject ?? newChat.subject,
+          messages: savedChat.messages ?? [],
         }
       ]);
       setCurrentChatId(chatId);
